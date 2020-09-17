@@ -1,0 +1,105 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <script src="https://unpkg.com/fretboards/dist/fretboard.js"></script>
+    <style lang="css">
+      h1,
+      h2 {
+        padding: 0;
+        margin-bottom: 0;
+        padding-left: 60px;
+        font-family: "Open Sans", Helvetica;
+        font-weight: 200;
+      }
+      h1 {
+        font-size: 24px;
+      }
+      h2 {
+        font-size: 18px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="fb1">
+      <h1></h1>
+    </div>
+
+    <div id="fb2">
+      <h1>D Dorian</h1>
+      <h2></h2>
+    </div>
+
+    <script>
+      const fb1 = fretboard.Fretboard({
+        where: "#fb1",
+        frets: 12,
+        //tuning: fretboard.Tunings.guitar6.Drop_D,
+      });
+
+      const F = {
+        name: "F chord",
+        notes: ["6:f2", "5:c3", "4:f3", "3:a3", "2:c4", "1:f4"],
+      };
+      const G = {
+        name: "G chord",
+        notes: ["6:g2", "5:b2", "4:d3", "3:g3", "2:d4", "1:g4"],
+      };
+      const C = {
+        name: "C chord",
+        notes: ["6:e2", "5:c3", "4:e3", "3:g3", "2:c4", "1:e4"],
+      };
+
+      const FM7= {
+        name: "F maj 7 chord",
+        notes: ["6:f2", "5:c3", "4:e3", "3:a3", "2:c4", "1:e4"],
+      };
+      
+
+
+      const sleep = async (interval) =>
+        await new Promise((r) => setTimeout(r, interval));
+
+      async function update(fb, notes, interval = 0) {
+        for (let note of notes) {
+          fb.add(note);
+          fb.paint();
+          await sleep(interval);
+        }
+      }
+
+      async function play(fb, title) {
+        for (let { name, notes } of [F, G, C,FM7]) {
+          fb.clearNotes();
+          document.querySelector(title).innerText = name;
+          await update(fb, notes);
+          await sleep(6000);
+        }
+      }
+
+      play(fb1, "#fb1 h1");
+
+      const fb2 = fretboard.Fretboard({
+        where: "#fb2",
+        frets: 12,
+      });
+
+      fb2.add("D Dorian");
+      fb2.paint();
+
+      async function resizeAndReverse(fb, title) {
+        for (let frets = 4; frets <= 12; frets++) {
+          fb.set("frets", frets);
+          document.querySelector(title).innerText = `${frets} frets`;
+          await sleep(1000);
+        }
+        //fb.set("leftHanded", true);
+        //document.querySelector(title).innerText = "...for lefties!";
+      }
+
+      //resizeAndReverse(fb2, "#fb2 h2");
+    </script>
+  </body>
+</html>
